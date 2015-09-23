@@ -1,0 +1,4 @@
+clarity_yandex_oauth_token:
+    path: /yandex/oauth/token
+    defaults: { _controller: YandexOAuthBundle:OAuth:getToken }
+    methods: [GET]

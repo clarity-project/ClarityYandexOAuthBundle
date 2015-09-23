@@ -1,0 +1,43 @@
+parameters:
+    clarity_yandex.oauth.manager.class: Clarity\YandexOAuthBundle\Manager\YandexOAuth
+    clarity_yandex.oauth.client.class: Clarity\YandexOAuthBundle\Client\YandexOAuthClient
+    clarity_yandex.oauth.client.url: https://oauth.yandex.com/
+    clarity_yandex.oauth.client.response_type: code
+    clarity_yandex.oauth.client.scope: account-info
+    # Guzzle request main setup
+    clarity_yandex.oauth.client.config:
+        request.params:
+            redirect.disable: true
+    # Abstract
+    clarity_yandex.abstract.manager.class: Clarity\YandexOAuthBundle\Manager\AbstractManager
+
+
+services:
+## Managers configuration ##
+    clarity_yandex.oauth.manager:
+        class: "%clarity_yandex.oauth.manager.class%"
+        arguments:
+            - "@clarity_yandex.oauth.client"
+            - "%clarity_yandex_oauth.apps%"
+            - "%clarity_yandex.oauth.client.response_type%"
+            - "%clarity_yandex.oauth.client.scope%"
+        lazy: true
+        public: true
+
+## Clients configurations ##
+    clarity_yandex.oauth.client:
+        class: "%clarity_yandex.oauth.client.class%"
+        arguments: ["%clarity_yandex.oauth.client.url%", "%clarity_yandex.oauth.client.config%"]
+        calls:
+            - ["setDescription", ["@clarity_yandex.oauth.client.service_description"]]
+        public: false
+        tags:
+            - {name: guzzle.client}
+
+## Client description services ##
+    clarity_yandex.oauth.client.service_description:
+        class: "%guzzle.service_description.class%"
+        factory_class: "%guzzle.service_description.class%"
+        factory_method: factory
+        public: false
+        arguments: ["%clarity_yandex.oauth.client.service_description.file_path%"]

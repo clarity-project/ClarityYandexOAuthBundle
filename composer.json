@@ -1,0 +1,28 @@
+{
+    "name": "clarity-project/yandex-oauth-bundle",
+    "description": "Symfony2 Yandex OAuth",
+    "keywords": ["yandex", "oauth", "passport", "php", "symfony", "symfony2", "xml"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Timofei Cherniavsky",
+            "email": "varloc2000@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "symfony/framework-bundle": "~2.2",
+        "symfony/symfony": "~2.3",
+        "guzzle/guzzle": "~3.8",
+        "misd/guzzle-bundle": "~1.0",
+        "jms/serializer-bundle": "0.13.*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~3.7"
+    },
+    "autoload": {
+        "psr-4": {
+            "Clarity\\YandexOAuthBundle\\": ""
+        }
+    }
+}

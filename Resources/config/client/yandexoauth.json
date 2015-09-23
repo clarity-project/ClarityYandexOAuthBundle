@@ -1,0 +1,80 @@
+{
+    "name": "YandexOAuth",
+    "baseUrl": "https://oauth.yandex.com",
+
+    "operations": {
+        "getAuthorizationCode": {
+            "httpMethod": "GET",
+            "uri": "authorize",
+            "summary": "Get authorization code - https://tech.yandex.com/oauth/doc/dg/reference/auto-code-client-docpage/",
+            "class": "Clarity\\YandexOAuthBundle\\Client\\Command\\YandexOAuthDeserializeCommand",
+            "responseClass": "array",
+            "parameters": {
+                "response_type": {
+                    "location": "query",
+                    "type": "string",
+                    "required": true
+                },
+                "client_id": {
+                    "location": "query",
+                    "type": "string",
+                    "required": true
+                },
+                "state": {
+                    "location": "query",
+                    "type": "string",
+                    "required": false
+                },
+                "device_id": {
+                    "location": "query",
+                    "type": "string",
+                    "required": false
+                },
+                "device_name": {
+                    "location": "query",
+                    "type": "string",
+                    "required": false
+                }
+            }
+        },
+        "getToken": {
+            "httpMethod": "POST",
+            "uri": "token",
+            "summary": "Get authorization token by authorization code - https://tech.yandex.com/oauth/doc/dg/reference/console-client-docpage/",
+            "class": "Clarity\\YandexOAuthBundle\\Client\\Command\\YandexOAuthDeserializeCommand",
+            "responseClass": "array",
+            "parameters": {
+                "grant_type": {
+                    "location": "postField",
+                    "type": "string",
+                    "required": true
+                },
+                "code": {
+                    "location": "postField",
+                    "type": "string",
+                    "required": true
+                },
+                "client_id": {
+                    "location": "postField",
+                    "type": "string",
+                    "required": false
+                },
+                "client_secret": {
+                    "location": "postField",
+                    "type": "string",
+                    "required": false
+                },
+                "device_id": {
+                    "location": "postField",
+                    "type": "string",
+                    "required": false
+                },
+                "device_name": {
+                    "location": "postField",
+                    "type": "string",
+                    "required": false
+                }
+            }
+        }
+    }
+}
