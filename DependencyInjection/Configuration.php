@@ -18,7 +18,7 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('clarity_yandex_oauth');
+        $rootNode = $treeBuilder->root('clarity_yandex_o_auth');
 
         $rootNode
             ->children()
