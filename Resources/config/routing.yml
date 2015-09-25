@@ -1,4 +1,12 @@
 clarity_yandex_oauth_token:
     path: /yandex/oauth/token
-    defaults: { _controller: YandexOAuthBundle:OAuth:getToken }
+    defaults: { _controller: ClarityYandexOAuthBundle:OAuth:getToken }
     methods: [GET]
+
+clarity_yandex_oauth_token_generage:
+    path: /yandex/oauth/token/generage/{appName}/{scope}
+    defaults: { _controller: ClarityYandexOAuthBundle:OAuth:generateToken }
+    methods: [GET]
+    requirements:
+        app_name: \w+
+        scope: \w+

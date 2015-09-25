@@ -88,7 +88,7 @@ class YandexOAuth extends AbstractManager
      *
      * @return array
      */
-    public function getToken($appName, $code)
+    public function getToken($code, $appName)
     {
         return $this->call('getToken', array(
             'grant_type'    => 'authorization_code',

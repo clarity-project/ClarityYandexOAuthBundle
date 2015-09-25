@@ -41,7 +41,7 @@
             "httpMethod": "POST",
             "uri": "token",
             "summary": "Get authorization token by authorization code - https://tech.yandex.com/oauth/doc/dg/reference/console-client-docpage/",
-            "class": "Clarity\\YandexOAuthBundle\\Client\\Command\\YandexOAuthDeserializeCommand",
+            "class": "Clarity\\YandexOAuthBundle\\Client\\Command\\YandexOAuthGetTokenCommand",
             "responseClass": "Clarity\\YandexOAuthBundle\\Entity\\AppToken",
             "parameters": {
                 "grant_type": {

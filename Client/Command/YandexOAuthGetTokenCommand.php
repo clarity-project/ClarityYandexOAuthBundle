@@ -5,7 +5,7 @@ namespace Clarity\YandexOAuthBundle\Client\Command;
 /**
  * @author varloc2000 <varloc2000@gmail.com>
  */
-class YandexOAuthDeserializeCommand extends AbstractDeserializeCommand
+class YandexOAuthGetTokenCommand extends AbstractDeserializeCommand
 {
     public function process()
     {

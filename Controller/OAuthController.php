@@ -13,7 +13,20 @@ class OAuthController extends Controller
         $code = $request->query->get('code');
 
         $token = $this
-            ->get('clarity_yandex.oauth.manager')
-            ->getToken($appName, $code);
+            ->get('clarity_yandex.oauth.service')
+            ->exchangeCodeToToken($code, $appName);
+    }
+
+    public function generateTokenAction($appName, $scope)
+    {
+        $codeResponse = $this
+            ->get('clarity_yandex.oauth.service')
+            ->getAuthorizationCode($appName, $appName);
+
+        if ($codeResponse->hasError()) {
+            die(var_dump($codeResponse->getError()));
+        }
+
+        return $this->redirect($codeResponse->getLocation());
     }
 }
