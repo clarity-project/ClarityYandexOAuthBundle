@@ -31,7 +31,7 @@ class AppTokenRepository extends EntityRepository
             ->andWhere('a.scope = :scope')
             ->setParameter('scope', $scope)
             ->getQuery()
-            ->execute()
+            ->getOneOrNullResult()
         ;
     }
 }
