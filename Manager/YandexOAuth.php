@@ -76,10 +76,10 @@ class YandexOAuth extends AbstractManager
     ) {
         return $this->call('getAuthorizationCode', array(
             'response_type' => $this->responseType,
-            'client_id' => $this->apps[$appName]['client_id'],
-            'state' => $state,
-            'device_id' => $deviceId,
-            'device_name' => $deviceName,
+            'client_id'     => $this->apps[$appName]['client_id'],
+            'state'         => $state,
+            'device_id'     => $deviceId,
+            'device_name'   => $deviceName,
         ));
     }
 
@@ -91,12 +91,12 @@ class YandexOAuth extends AbstractManager
     public function getToken($appName, $code)
     {
         return $this->call('getToken', array(
-            'grant_type' => 'authorization_code',
-            'code' => $code,
-            'client_id' => $this->apps[$appName]['client_id'],
+            'grant_type'    => 'authorization_code',
+            'code'          => $code,
+            'client_id'     => $this->apps[$appName]['client_id'],
             'client_secret' => $this->apps[$appName]['client_secret'],
-            'device_id' => $this->apps[$appName]['client_id'],
-            'device_name' => $this->apps[$appName]['client_id'],
+            'device_id'     => $this->apps[$appName]['client_id'],
+            'device_name'   => $this->apps[$appName]['client_id'],
         ));
     }
 }

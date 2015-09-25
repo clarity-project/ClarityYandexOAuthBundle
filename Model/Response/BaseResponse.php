@@ -33,9 +33,9 @@ class BaseResponse
     }
 
     /**
-     * @param array $error the error
+     * @param Error $error the error
      *
-     * @return self
+     * @return BaseResponse
      */
     public function setError(Error $error)
     {

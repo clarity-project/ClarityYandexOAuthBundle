@@ -7,8 +7,8 @@
             "httpMethod": "GET",
             "uri": "authorize",
             "summary": "Get authorization code - https://tech.yandex.com/oauth/doc/dg/reference/auto-code-client-docpage/",
-            "class": "Clarity\\YandexOAuthBundle\\Client\\Command\\YandexOAuthDeserializeCommand",
-            "responseClass": "array",
+            "class": "Clarity\\YandexOAuthBundle\\Client\\Command\\YandexOAuthGetCodeCommand",
+            "responseClass": "Clarity\\YandexOAuthBundle\\Model\\Response\\CodeResponse",
             "parameters": {
                 "response_type": {
                     "location": "query",

@@ -11,6 +11,9 @@ use JMS\Serializer\SerializerInterface;
  */
 abstract class AbstractDeserializeCommand extends OperationCommand implements JMSSerializerAwareCommandInterface
 {
+    /**
+     * @var \JMS\Serializer\SerializerInterface
+     */
     public $serializer;
 
     /**
