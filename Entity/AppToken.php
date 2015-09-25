@@ -3,9 +3,11 @@
 namespace Clarity\YandexOAuthBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
+
 
 /**
- * Device
+ * Class AppToken
  *
  * @ORM\Table(name="clarity_yandex_oauth_app_token",
  *      uniqueConstraints={
@@ -41,14 +43,31 @@ class AppToken
     private $scope;
 
     /**
-     * @ORM\Column(type="string", length=32)
+     * @ORM\Column(type="string", length=128)
+     *
+     * @Serializer\SerializedName("access_token")
+     * @Serializer\Type("string")
      *
      * @var string
      */
     private $token;
 
     /**
+     * @var string*
+     *
+     * @ORM\Column(type="string", length=128)
+     *
+     * @Serializer\SerializedName("token_type")
+     * @Serializer\Type("string")
+     *
+     */
+    protected $type;
+
+    /**
      * @ORM\Column(type="datetime")
+     *
+     * @Serializer\SerializedName("expires_in")
+     * @Serializer\Type("DateTime")
      *
      * @var \DateTime
      */
@@ -142,5 +161,21 @@ class AppToken
         $this->expired = $expired;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
     }
 }
