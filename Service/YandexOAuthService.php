@@ -34,7 +34,7 @@ class YandexOAuthService
      * @param string $appName
      * @param string $scope
      *
-     * @return \Clarity\YandexOAuthBundle\Model\AppToken
+     * @return \Clarity\YandexOAuthBundle\Entity\AppToken
      * @throws InvalidTokenException
      */
     public function getCachedToken($appName, $scope)
@@ -54,7 +54,7 @@ class YandexOAuthService
      * @param string $code
      * @param string $appName
      *
-     * @return \Clarity\YandexOAuthBundle\Model\AppToken
+     * @return \Clarity\YandexOAuthBundle\Entity\AppToken
      * @throws InvalidTokenException
      */
     public function exchangeCodeToToken($code, $appName)
@@ -74,7 +74,7 @@ class YandexOAuthService
      * @param string $appName
      * @param string $scope
      *
-     * @return \Clarity\YandexOAuthBundle\Model\CodeResponse
+     * @return \Clarity\YandexOAuthBundle\Model\Response\CodeResponse
      * @throws \Exception
      */
     public function getAuthorizationCode($appName, $scope)
@@ -82,7 +82,7 @@ class YandexOAuthService
         $response = $this->guzzleManager->getAuthorizationCode($appName, $scope);
 
         if ($response->hasError()) {
-            throw \Exception($response->getError()->getMessage());
+            throw new \Exception($response->getError()->getDescription());
         }
 
         return $response;

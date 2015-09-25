@@ -2,6 +2,7 @@
 
 namespace Clarity\YandexOAuthBundle\Manager;
 
+use Clarity\YandexOAuthBundle\Model\Response\CodeResponse;
 use Guzzle\Service\ClientInterface;
 
 /**
@@ -66,7 +67,7 @@ class YandexOAuth extends AbstractManager
      * @param string $deviceId
      * @param string $deviceName
      *
-     * @return array
+     * @return CodeResponse
      */
     public function getAuthorizationCode(
         $appName,
