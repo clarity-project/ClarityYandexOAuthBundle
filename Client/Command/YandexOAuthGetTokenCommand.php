@@ -12,7 +12,7 @@ class YandexOAuthGetTokenCommand extends AbstractDeserializeCommand
         $this->result = $this->serializer->deserialize(
             $this->request->getResponse()->getBody(true),
             $this->getOperation()->getResponseClass(),
-            'xml'
+            'json'
         );
     }
 }
