@@ -61,8 +61,6 @@ class YandexOAuthService
     {
         $response = $this->guzzleManager->getToken($code, $appName);
 
-        die(var_dump($response));
-
         if ($response->hasError()) {
             throw \Exception($response->getError()->getMessage());
         }

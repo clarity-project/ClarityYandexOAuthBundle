@@ -67,11 +67,22 @@ class AppToken
      * @ORM\Column(type="datetime")
      *
      * @Serializer\SerializedName("expires_in")
-     * @Serializer\Type("DateTime")
+     * @Serializer\Type("integer")
+     * @Serializer\Accessor(setter="deserializeExpiresSeconds")
      *
      * @var \DateTime
      */
     private $expired;
+
+    /**
+     * @param string $seconds
+     */
+    public function deserializeExpiresSeconds($seconds)
+    {
+        $now = new \DateTime();
+        $now->add(new \DateInterval('PT' . $seconds . 'S'));
+        $this->expired = $now;
+    }
 
     /**
      * Get id
