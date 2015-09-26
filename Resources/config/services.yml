@@ -1,6 +1,4 @@
 parameters:
-    clarity_yandex.oauth.repository.class: Clarity\YandexOAuthBundle\Repository\AppTokenRepository
-    clarity_yandex.oauth.repository.factory_argument: 'ClarityYandexOAuthBundle:AppToken'
     clarity_yandex.oauth.service.class: Clarity\YandexOAuthBundle\Service\YandexOAuthService
     clarity_yandex.oauth.manager.class: Clarity\YandexOAuthBundle\Manager\YandexOAuth
     clarity_yandex.oauth.client.class: Clarity\YandexOAuthBundle\Client\YandexOAuthClient
@@ -21,17 +19,8 @@ services:
         class: "%clarity_yandex.oauth.service.class%"
         arguments:
             - "@clarity_yandex.oauth.manager"
-            - "@clarity_yandex.oauth.repository"
+            - "@doctrine.orm.default_entity_manager"
         lazy: true
-        public: true
-
-## Repo ##
-    clarity_yandex.oauth.repository:
-        class: %clarity_yandex.oauth.repository.class%
-        factory_service: doctrine.orm.default_entity_manager
-        factory_method: getRepository
-        arguments:
-            - %clarity_yandex.oauth.repository.factory_argument%
         public: true
 
 ## Manager configuration ##
