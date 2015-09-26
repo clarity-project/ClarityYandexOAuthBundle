@@ -4,6 +4,7 @@ namespace Clarity\YandexOAuthBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
+use Clarity\YandexOAuthBundle\Model\Response\BaseResponse;
 
 
 /**
@@ -19,7 +20,7 @@ use JMS\Serializer\Annotation as Serializer;
  * @author Vladislav Shishko <13thMerlin@gmail.com>
  * @author varloc2000 <varloc2000@gmail.com>
  */
-class AppToken
+class AppToken extends BaseResponse
 {
     /**
      * @var integer
@@ -32,6 +33,8 @@ class AppToken
 
     /**
      * @ORM\Column(name="client_id", type="string")
+     * @Serializer\SerializedName("state")
+     * @Serializer\Type("string")
      *
      * @var string
      */

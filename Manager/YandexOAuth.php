@@ -60,8 +60,6 @@ class YandexOAuth extends AbstractManager
     }
 
     /**
-     * OAuth client 'getAuthorizationCode' method
-     *
      * @param string $appName
      * @param string $state
      * @param string $deviceId

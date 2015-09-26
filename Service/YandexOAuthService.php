@@ -23,12 +23,12 @@ class YandexOAuthService
     /**
      * @var EntityManager
      */
-    private $em;
+    private $entityManager;
 
     public function __construct(YandexOAuth $guzzleManager, EntityManager $entityManager)
     {
         $this->guzzleManager = $guzzleManager;
-        $this->em = $entityManager;
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -41,7 +41,7 @@ class YandexOAuthService
     public function getCachedToken($appName, $scope)
     {
         $appToken = $this
-            ->em->getRepository('ClarityYandexOAuthBundle:AppToken')
+            ->entityManager->getRepository('ClarityYandexOAuthBundle:AppToken')
             ->getAppTokenByAppNameAndScope($appName, $scope);
 
         if (null === $appToken) {
@@ -54,22 +54,26 @@ class YandexOAuthService
     /**
      * Exchange received authorization code on token and save token
      *
-     * @param string $code
+     * @param string $code - authorization code
      * @param string $appName
+     * @param string $scope
      *
      * @return \Clarity\YandexOAuthBundle\Entity\AppToken
      * @throws InvalidTokenException
      */
-    public function exchangeCodeToToken($code, $appName)
+    public function exchangeCodeToToken($code, $appName, $scope)
     {
         $appToken = $this->guzzleManager->getToken($code, $appName);
 
         if ($appToken->hasError()) {
-            throw \Exception($appToken->getError()->getMessage());
+            throw new \Exception($appToken->getError()->getDescription());
         }
 
-        $this->em->persist($appToken);
-        $this->em->flush();
+        $appToken->setAppName($appName);
+        $appToken->setScope($scope);
+
+        $this->entityManager->persist($appToken);
+        $this->entityManager->flush();
 
         return $appToken;
     }
