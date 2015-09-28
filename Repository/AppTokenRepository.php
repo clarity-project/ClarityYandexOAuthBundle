@@ -23,15 +23,24 @@ class AppTokenRepository extends EntityRepository
         ;
     }
 
-    public function getAppTokenByAppNameAndScope($appName, $scope)
+    public function getAppTokenByAppNameAndScopeAndDeviceId($appName, $scope, $deviceId = null)
     {
-        return $this->getActiveQB()
+
+        $qb = $this->getActiveQB()
             ->andWhere('a.appName = :app_name')
             ->setParameter('app_name', $appName)
             ->andWhere('a.scope = :scope')
             ->setParameter('scope', $scope)
-            ->getQuery()
-            ->getOneOrNullResult()
         ;
+
+        if ($deviceId) {
+            $qb
+                ->andWhere('a.deviceId = :device_id')
+                ->setParameter('device_id', $deviceId);
+        } else {
+            $qb->andWhere('a.deviceId IS NULL');
+        }
+
+        return $qb->getQuery()->getOneOrNullResult();
     }
 }

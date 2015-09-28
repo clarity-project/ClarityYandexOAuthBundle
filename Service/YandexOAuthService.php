@@ -2,12 +2,12 @@
 
 namespace Clarity\YandexOAuthBundle\Service;
 
-use Guzzle\Service\ClientInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Doctrine\ORM\EntityManager;
-use Clarity\YandexOAuthBundle\Manager\YandexOAuth;
-use Clarity\YandexOAuthBundle\Repository\AppTokenRepository;
+use Clarity\YandexOAuthBundle\Exception\GetAuthorizationCodeException;
+use Clarity\YandexOAuthBundle\Exception\GetAuthorizationTokenException;
 use Clarity\YandexOAuthBundle\Exception\InvalidTokenException;
+use Clarity\YandexOAuthBundle\Repository\AppTokenRepository;
+use Clarity\YandexOAuthBundle\Manager\YandexOAuth;
 
 /**
  * @author varloc2000 <varloc2000@gmail.com>
@@ -25,6 +25,10 @@ class YandexOAuthService
      */
     private $entityManager;
 
+    /**
+     * @param YandexOAuth $guzzleManager
+     * @param EntityManager $entityManager
+     */
     public function __construct(YandexOAuth $guzzleManager, EntityManager $entityManager)
     {
         $this->guzzleManager = $guzzleManager;
@@ -34,15 +38,16 @@ class YandexOAuthService
     /**
      * @param string $appName
      * @param string $scope
+     * @param string|null $deviceId
      *
      * @return \Clarity\YandexOAuthBundle\Entity\AppToken
      * @throws InvalidTokenException
      */
-    public function getCachedToken($appName, $scope)
+    public function getCachedToken($appName, $scope, $deviceId = null)
     {
         $appToken = $this
-            ->entityManager->getRepository('ClarityYandexOAuthBundle:AppToken')
-            ->getAppTokenByAppNameAndScope($appName, $scope);
+            ->getAppTokenRepository()
+            ->getAppTokenByAppNameAndScopeAndDeviceId($appName, $scope, $deviceId);
 
         if (null === $appToken) {
             throw new InvalidTokenException();
@@ -57,22 +62,40 @@ class YandexOAuthService
      * @param string $code - authorization code
      * @param string $appName
      * @param string $scope
+     * @param string|null $deviceId
+     * @param string|null $deviceName
      *
      * @return \Clarity\YandexOAuthBundle\Entity\AppToken
-     * @throws InvalidTokenException
+     *
+     * @throws GetAuthorizationTokenException
      */
-    public function exchangeCodeToToken($code, $appName, $scope)
+    public function exchangeCodeToToken($code, $appName, $scope, $deviceId = null, $deviceName = null)
     {
-        $appToken = $this->guzzleManager->getToken($code, $appName);
+        $appToken = $this
+            ->guzzleManager
+            ->getToken($code, $appName);
 
         if ($appToken->hasError()) {
-            throw new \Exception($appToken->getError()->getDescription());
+            throw new GetAuthorizationTokenException($appToken->getError());
         }
 
         $appToken->setAppName($appName);
         $appToken->setScope($scope);
+        $appToken->setDeviceId($deviceId);
+        $appToken->setDeviceName($deviceName);
 
-        $this->entityManager->persist($appToken);
+        $existedAppToken = $this
+            ->getAppTokenRepository()
+            ->getAppTokenByAppNameAndScopeAndDeviceId($appName, $scope, $deviceId);
+
+        if ($existedAppToken) {
+            $appToken->setId($existedAppToken->getId());
+
+            $this->entityManager->merge($appToken);
+        } else {
+            $this->entityManager->persist($appToken);
+        }
+
         $this->entityManager->flush();
 
         return $appToken;
@@ -81,9 +104,11 @@ class YandexOAuthService
     /**
      * @param string $appName
      * @param string $state
+     * @param null $deviceId
+     * @param null $deviceName
      *
      * @return \Clarity\YandexOAuthBundle\Model\Response\CodeResponse
-     * @throws \Exception
+     * @throws GetAuthorizationCodeException
      */
     public function getAuthorizationCode($appName, $state, $deviceId = null, $deviceName = null)
     {
@@ -92,9 +117,17 @@ class YandexOAuthService
             ->getAuthorizationCode($appName, $state, $deviceId, $deviceName);
 
         if ($codeResponse->hasError()) {
-            throw new \Exception($codeResponse->getError()->getDescription());
+            throw new GetAuthorizationCodeException($codeResponse->getError());
         }
 
         return $codeResponse;
+    }
+
+    /**
+     * @return AppTokenRepository
+     */
+    protected function getAppTokenRepository()
+    {
+        return $this->entityManager->getRepository('ClarityYandexOAuthBundle:AppToken');
     }
 }

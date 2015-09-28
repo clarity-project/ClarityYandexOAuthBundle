@@ -2,6 +2,7 @@
 
 namespace Clarity\YandexOAuthBundle\Manager;
 
+use Clarity\YandexOAuthBundle\Entity\AppToken;
 use Clarity\YandexOAuthBundle\Model\Response\CodeResponse;
 use Guzzle\Service\ClientInterface;
 
@@ -13,32 +14,12 @@ class YandexOAuth extends AbstractManager
     /**
      * @var string
      */
-    private $clientId;
-
-    /**
-     * @var string
-     */
-    private $clientSecret;
-
-    /**
-     * @var string
-     */
     private $responseType;
 
     /**
      * @var string
      */
-    private $redirectUrl;
-
-    /**
-     * @var string
-     */
     private $scope;
-
-    /**
-     * @var string
-     */
-    private $authorizationToken;
 
     /**
      * @param \Guzzle\Service\ClientInterface $client
@@ -83,9 +64,9 @@ class YandexOAuth extends AbstractManager
     }
 
     /**
-     * OAuth client 'getToken' method
-     *
-     * @return array
+     * @param $code
+     * @param $appName
+     * @return AppToken
      */
     public function getToken($code, $appName)
     {

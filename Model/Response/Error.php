@@ -74,4 +74,12 @@ class Error
 
         return $this;
     }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->code . ':' . $this->description;
+    }
 }

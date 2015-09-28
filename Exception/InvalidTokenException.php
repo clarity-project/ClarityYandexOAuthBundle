@@ -7,5 +7,5 @@ namespace Clarity\YandexOAuthBundle\Exception;
  */
 class InvalidTokenException extends \Exception
 {
-    protected $message = 'Token expired or empty. Try to generate new token with route "clarity_yandex_oauth_token_generage"';
+    protected $message = 'Token expired or does not exist. Try to generate new token with route "clarity_yandex_oauth_token_generage"';
 }

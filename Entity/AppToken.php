@@ -6,15 +6,14 @@ use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
 use Clarity\YandexOAuthBundle\Model\Response\BaseResponse;
 
-
 /**
  * Class AppToken
  *
  * @ORM\Table(name="clarity_yandex_oauth_app_token",
  *      uniqueConstraints={
  *          @ORM\UniqueConstraint(
- *              name="idx_client_id_scope_unique",
- *              columns={"client_id", "scope"}
+ *              name="idx_token_unique",
+ *              columns={"app_name", "scope", "device_id"}
  *      )})
  * @ORM\Entity(repositoryClass="\Clarity\YandexOAuthBundle\Repository\AppTokenRepository")
  * @author Vladislav Shishko <13thMerlin@gmail.com>
@@ -32,13 +31,25 @@ class AppToken extends BaseResponse
     private $id;
 
     /**
-     * @ORM\Column(name="client_id", type="string")
-     * @Serializer\SerializedName("state")
-     * @Serializer\Type("string")
+     * @ORM\Column(name="app_name", type="string")
      *
      * @var string
      */
     private $appName;
+
+    /**
+     * @ORM\Column(name="device_id", type="string", nullable=true)
+     *
+     * @var string
+     */
+    private $deviceId;
+
+    /**
+     * @ORM\Column(name="device_name", type="string", nullable=true)
+     *
+     * @var string
+     */
+    private $deviceName;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -88,13 +99,19 @@ class AppToken extends BaseResponse
     }
 
     /**
-     * Get id
-     *
-     * @return integer 
+     * @return int
      */
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
     }
 
     /**
@@ -120,13 +137,45 @@ class AppToken extends BaseResponse
     /**
      * @return string
      */
+    public function getDeviceId()
+    {
+        return $this->deviceId;
+    }
+
+    /**
+     * @param string $deviceId
+     */
+    public function setDeviceId($deviceId)
+    {
+        $this->deviceId = $deviceId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDeviceName()
+    {
+        return $this->deviceName;
+    }
+
+    /**
+     * @param string $deviceName
+     */
+    public function setDeviceName($deviceName)
+    {
+        $this->deviceName = $deviceName;
+    }
+
+    /**
+     * @return string
+     */
     public function getScope()
     {
         return $this->scope;
     }
 
     /**
-     * @param mixed $scopes the scope
+     * @param string $scope
      *
      * @return self
      */

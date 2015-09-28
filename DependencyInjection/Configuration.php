@@ -22,6 +22,9 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
+                ->scalarNode('default_redirect_route')
+                    ->isRequired()
+                ->end()
                 ->arrayNode('apps')
                     ->requiresAtLeastOneElement()
                     ->isRequired()
@@ -29,6 +32,7 @@ class Configuration implements ConfigurationInterface
                         ->children()
                             ->scalarNode('client_id')->end()
                             ->scalarNode('client_secret')->end()
+                            ->scalarNode('redirect_route')->end()
                             ->arrayNode('scopes')
                                 ->requiresAtLeastOneElement()
                                 ->isRequired()

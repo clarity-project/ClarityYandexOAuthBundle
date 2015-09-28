@@ -35,5 +35,4 @@ class CodeResponse extends BaseResponse
     {
         $this->location = $location;
     }
-
 }

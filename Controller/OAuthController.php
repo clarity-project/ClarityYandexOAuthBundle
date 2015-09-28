@@ -2,58 +2,103 @@
 
 namespace Clarity\YandexOAuthBundle\Controller;
 
+use Clarity\YandexOAuthBundle\Exception\GetAuthorizationCodeException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class OAuthController extends Controller
 {
     protected $uriGlue = '--';
+
     /**
-     * Send request to yuandex ouath to get access rights to app with specified scopes
-     * User was redirected to yandex passport page to login and allow access to app
+     * Send request to Yandex ouath get authorization code for app with specified scopes
+     * User was redirected to Yandex passport page to login and allow or decline access to app
      *
      * @param Request $request
      * @param string $appName - configured application name from config.yml
      * @param string $scope - configured name of scopes set from config.yml
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @throws GetAuthorizationCodeException
      */
     public function requestTokenAction(Request $request, $appName, $scope)
     {
         $deviceId = $request->query->get('device_id');
         $deviceName = $request->query->get('device_name');
+        $stateChunks = array($appName, $scope);
 
+        if ($deviceId) {
+            $stateChunks[] = $deviceId;
+
+            if ($deviceName) {
+                $stateChunks[] = $deviceName;
+            }
+        }
+
+        /** @var \Clarity\YandexOAuthBundle\Model\Response\CodeResponse $codeResponse */
         $codeResponse = $this
-            ->get('clarity_yandex.oauth.service')
+            ->getYandexOauthService()
             ->getAuthorizationCode(
                 $appName, 
-                $appName . $this->uriGlue . $scope, 
-                $deviceId, 
+                implode($this->uriGlue, $stateChunks),
+                $deviceId,
                 $deviceName
             );
-
-        if ($codeResponse->hasError()) {
-            die(var_dump($codeResponse->getError()));
-        }
 
         return $this->redirect($codeResponse->getLocation());
     }
 
     /**
      * Return user after allowing or decline access to this action
-     * Exhange received in url code to access token if user allow access to app
+     * Exchange received in url code to access token if user allow access to app
      * Throw an exception with error message if user decline access to app
      *
      * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @throws \GetAuthorizationCodeException
      */
     public function exchangeCodeToTokenAction(Request $request)
     {
-        $state = $request->query->get('state');
-        $parameters = array_combine(array('app_name', 'scope'), explode($this->uriGlue, $state));
+        // Process error returned in redirect url parameters
+        if ($request->query->has('error')) {
+            throw new \GetAuthorizationCodeException(
+                $request->query->get('error') . ' : ' . $request->query->get('error_description')
+            );
+        }
+
+        $parameters = explode($this->uriGlue, $request->query->get('state'));
         $code = $request->query->get('code');
 
-        $token = $this
-            ->get('clarity_yandex.oauth.service')
-            ->exchangeCodeToToken($code, $parameters['app_name'], $parameters['scope']);
+        $this
+            ->getYandexOauthService()
+            ->exchangeCodeToToken(
+                $code,
+                $parameters[0],
+                $parameters[1],
+                array_key_exists(2, $parameters) ? $parameters[2] : null,
+                array_key_exists(3, $parameters) ? $parameters[3] : null
+            );
 
-        return $this->redirect($codeResponse->getLocation());
+        return $this->redirectToRoute($this->getAppRedirectRoute($parameters[0]));
+    }
+
+    /**
+     * @return \Clarity\YandexOAuthBundle\Service\YandexOAuthService
+     */
+    protected function getYandexOauthService()
+    {
+        return $this->get('clarity_yandex.oauth.service');
+    }
+
+    /**
+     * @param $appName
+     * @return string
+     */
+    protected function getAppRedirectRoute($appName)
+    {
+        $apps = $this->getParameter('clarity_yandex_oauth.apps');
+
+        return array_key_exists('redirect_route', $apps[$appName])
+            ? $apps[$appName]['redirect_route']
+            : $this->getParameter('clarity_yandex_oauth.default_redirect_route');
     }
 }

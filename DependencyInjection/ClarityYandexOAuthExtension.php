@@ -32,5 +32,6 @@ class ClarityYandexOAuthExtension extends Extension
         );
 
         $container->setParameter('clarity_yandex_oauth.apps', $config['apps']);
+        $container->setParameter('clarity_yandex_oauth.default_redirect_route', $config['default_redirect_route']);
     }
 }
