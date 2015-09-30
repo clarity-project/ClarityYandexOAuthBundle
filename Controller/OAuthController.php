@@ -11,20 +11,19 @@ class OAuthController extends Controller
     protected $uriGlue = '--';
 
     /**
-     * Send request to Yandex ouath get authorization code for app with specified scopes
+     * Send request to Yandex ouath get authorization code for app
      * User was redirected to Yandex passport page to login and allow or decline access to app
      *
      * @param Request $request
      * @param string $appName - configured application name from config.yml
-     * @param string $scope - configured name of scopes set from config.yml
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @throws GetAuthorizationCodeException
      */
-    public function requestTokenAction(Request $request, $appName, $scope)
+    public function requestTokenAction(Request $request, $appName)
     {
         $deviceId = $request->query->get('device_id');
         $deviceName = $request->query->get('device_name');
-        $stateChunks = array($appName, $scope);
+        $stateChunks = array($appName);
 
         if ($deviceId) {
             $stateChunks[] = $deviceId;
@@ -54,13 +53,13 @@ class OAuthController extends Controller
      *
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     * @throws \GetAuthorizationCodeException
+     * @throws GetAuthorizationCodeException
      */
     public function exchangeCodeToTokenAction(Request $request)
     {
         // Process error returned in redirect url parameters
         if ($request->query->has('error')) {
-            throw new \GetAuthorizationCodeException(
+            throw new GetAuthorizationCodeException(
                 $request->query->get('error') . ' : ' . $request->query->get('error_description')
             );
         }
@@ -73,9 +72,8 @@ class OAuthController extends Controller
             ->exchangeCodeToToken(
                 $code,
                 $parameters[0],
-                $parameters[1],
-                array_key_exists(2, $parameters) ? $parameters[2] : null,
-                array_key_exists(3, $parameters) ? $parameters[3] : null
+                array_key_exists(1, $parameters) ? $parameters[1] : null,
+                array_key_exists(2, $parameters) ? $parameters[2] : null
             );
 
         return $this->redirectToRoute($this->getAppRedirectRoute($parameters[0]));

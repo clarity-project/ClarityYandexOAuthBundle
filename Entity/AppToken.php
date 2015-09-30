@@ -13,7 +13,7 @@ use Clarity\YandexOAuthBundle\Model\Response\BaseResponse;
  *      uniqueConstraints={
  *          @ORM\UniqueConstraint(
  *              name="idx_token_unique",
- *              columns={"app_name", "scope", "device_id"}
+ *              columns={"app_name", "device_id"}
  *      )})
  * @ORM\Entity(repositoryClass="\Clarity\YandexOAuthBundle\Repository\AppTokenRepository")
  * @author Vladislav Shishko <13thMerlin@gmail.com>
@@ -50,11 +50,6 @@ class AppToken extends BaseResponse
      * @var string
      */
     private $deviceName;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $scope;
 
     /**
      * @ORM\Column(type="string", length=128)
@@ -164,26 +159,6 @@ class AppToken extends BaseResponse
     public function setDeviceName($deviceName)
     {
         $this->deviceName = $deviceName;
-    }
-
-    /**
-     * @return string
-     */
-    public function getScope()
-    {
-        return $this->scope;
-    }
-
-    /**
-     * @param string $scope
-     *
-     * @return self
-     */
-    public function setScope($scope)
-    {
-        $this->scope = $scope;
-
-        return $this;
     }
 
     /**

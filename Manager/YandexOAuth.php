@@ -17,27 +17,16 @@ class YandexOAuth extends AbstractManager
     private $responseType;
 
     /**
-     * @var string
-     */
-    private $scope;
-
-    /**
      * @param \Guzzle\Service\ClientInterface $client
      * @param array $apps
      * @param string $responseType
-     * @param string $scope
      */
-    public function __construct(
-        ClientInterface $client,
-        $apps,
-        $responseType,
-        $scope
-    ) {
+    public function __construct(ClientInterface $client, $apps, $responseType)
+    {
         parent::__construct($client);
 
         $this->apps = $apps;
         $this->responseType = $responseType;
-        $this->scope = $scope;
     }
 
     /**

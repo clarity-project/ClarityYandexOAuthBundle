@@ -1,10 +1,7 @@
 clarity_yandex_oauth_token_request:
-    path: /yandex/oauth/token/request/{appName}/{scope}
+    path: /yandex/oauth/token/request/{appName}
     defaults: { _controller: ClarityYandexOAuthBundle:OAuth:requestToken }
     methods: [GET]
-    requirements:
-        app_name: \w+
-        scope: \w+
 
 clarity_yandex_oauth_token_exchange:
     path: /yandex/oauth/token/exchange

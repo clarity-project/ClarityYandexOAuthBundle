@@ -4,7 +4,6 @@ parameters:
     clarity_yandex.oauth.client.class: Clarity\YandexOAuthBundle\Client\YandexOAuthClient
     clarity_yandex.oauth.client.url: https://oauth.yandex.com/
     clarity_yandex.oauth.client.response_type: code
-    clarity_yandex.oauth.client.scope: account-info
     # Guzzle request main setup
     clarity_yandex.oauth.client.config:
         request.params:
@@ -30,7 +29,6 @@ services:
             - "@clarity_yandex.oauth.client"
             - "%clarity_yandex_oauth.apps%"
             - "%clarity_yandex.oauth.client.response_type%"
-            - "%clarity_yandex.oauth.client.scope%"
         lazy: true
         public: false
 

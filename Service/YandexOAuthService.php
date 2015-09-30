@@ -37,66 +37,20 @@ class YandexOAuthService
 
     /**
      * @param string $appName
-     * @param string $scope
      * @param string|null $deviceId
      *
      * @return \Clarity\YandexOAuthBundle\Entity\AppToken
      * @throws InvalidTokenException
      */
-    public function getCachedToken($appName, $scope, $deviceId = null)
+    public function getCachedToken($appName, $deviceId = null)
     {
         $appToken = $this
             ->getAppTokenRepository()
-            ->getAppTokenByAppNameAndScopeAndDeviceId($appName, $scope, $deviceId);
+            ->getAppTokenByAppNameAndDeviceId($appName, $deviceId);
 
         if (null === $appToken) {
             throw new InvalidTokenException();
         }
-
-        return $appToken;
-    }
-
-    /**
-     * Exchange received authorization code on token and save token
-     *
-     * @param string $code - authorization code
-     * @param string $appName
-     * @param string $scope
-     * @param string|null $deviceId
-     * @param string|null $deviceName
-     *
-     * @return \Clarity\YandexOAuthBundle\Entity\AppToken
-     *
-     * @throws GetAuthorizationTokenException
-     */
-    public function exchangeCodeToToken($code, $appName, $scope, $deviceId = null, $deviceName = null)
-    {
-        $appToken = $this
-            ->guzzleManager
-            ->getToken($code, $appName);
-
-        if ($appToken->hasError()) {
-            throw new GetAuthorizationTokenException($appToken->getError());
-        }
-
-        $appToken->setAppName($appName);
-        $appToken->setScope($scope);
-        $appToken->setDeviceId($deviceId);
-        $appToken->setDeviceName($deviceName);
-
-        $existedAppToken = $this
-            ->getAppTokenRepository()
-            ->getAppTokenByAppNameAndScopeAndDeviceId($appName, $scope, $deviceId);
-
-        if ($existedAppToken) {
-            $appToken->setId($existedAppToken->getId());
-
-            $this->entityManager->merge($appToken);
-        } else {
-            $this->entityManager->persist($appToken);
-        }
-
-        $this->entityManager->flush();
 
         return $appToken;
     }
@@ -121,6 +75,49 @@ class YandexOAuthService
         }
 
         return $codeResponse;
+    }
+
+    /**
+     * Exchange received authorization code on token and save token
+     *
+     * @param string $code - authorization code
+     * @param string $appName
+     * @param string|null $deviceId
+     * @param string|null $deviceName
+     *
+     * @return \Clarity\YandexOAuthBundle\Entity\AppToken
+     *
+     * @throws GetAuthorizationTokenException
+     */
+    public function exchangeCodeToToken($code, $appName, $deviceId = null, $deviceName = null)
+    {
+        $appToken = $this
+            ->guzzleManager
+            ->getToken($code, $appName);
+
+        if ($appToken->hasError()) {
+            throw new GetAuthorizationTokenException($appToken->getError());
+        }
+
+        $appToken->setAppName($appName);
+        $appToken->setDeviceId($deviceId);
+        $appToken->setDeviceName($deviceName);
+
+        $existedAppToken = $this
+            ->getAppTokenRepository()
+            ->getAppTokenByAppNameAndDeviceId($appName, $deviceId);
+
+        if ($existedAppToken) {
+            $appToken->setId($existedAppToken->getId());
+
+            $this->entityManager->merge($appToken);
+        } else {
+            $this->entityManager->persist($appToken);
+        }
+
+        $this->entityManager->flush();
+
+        return $appToken;
     }
 
     /**
