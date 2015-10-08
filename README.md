@@ -1,5 +1,6 @@
 ClarityYandexOAuthBundle
 ================
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/da1d25ff-fba8-4aa6-8254-e63bd05e0d73/mini.png)](https://insight.sensiolabs.com/projects/da1d25ff-fba8-4aa6-8254-e63bd05e0d73)
 
 ### What is this?
 
